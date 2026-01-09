@@ -1,4 +1,4 @@
-gnore sensitive data
+# Ignore sensitive data
 config.yaml
 .env
 
