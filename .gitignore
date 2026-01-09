@@ -1,6 +1,7 @@
 # Ignore sensitive data
 config.yaml
 .env
+cookies.json
 
 # Ignore scraped data
 data/*.csv

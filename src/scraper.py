@@ -3,44 +3,45 @@ import yaml
 import pandas as pd
 from twikit import Client
 from parser import parse_tweet_data
+import os
 
 async def main():
-    # 1. Load Configuration
+    print("🚀 Starting EV Tweet Scraper...")
+    # 1. Load Config
     with open("config.yaml", "r") as f:
         config = yaml.safe_load(f)
 
-    # 2. Initialize Client
     client = Client('en-US')
-    
-    # login (Uses cookies if available to avoid blocks)
-    try:
+
+    # 2. Use ONLY cookies to avoid Cloudflare 403
+    if os.path.exists('cookies.json'):
         client.load_cookies('cookies.json')
-    except:
-        await client.login(
-            auth_info_1=config['auth']['username'],
-            auth_info_2=config['auth']['email'],
-            password=config['auth']['password']
-        )
-        client.save_cookies('cookies.json')
+        print("✅ Session loaded from cookies. Cloudflare bypassed.")
+    else:
+        print("❌ Error: 'cookies.json' not found!")
+        print("Please export your X cookies from your browser and save them to 'cookies.json'.")
+        return
 
     all_data = []
-
-    # 3. Loop through EV keywords
+    
+    # 3. Search Loop
     for query in config['search']['queries']:
         print(f"Searching for: {query}")
-        tweets = await client.search_tweet(query, 'Top')
-        
-        for tweet in tweets:
-            clean_tweet = parse_tweet_data(tweet)
-            all_data.append(clean_tweet)
-        
-        # Respectful delay to avoid bans
-        await asyncio.sleep(5) 
+        try:
+            # Added a slight delay to look more 'human'
+            await asyncio.sleep(2) 
+            tweets = await client.search_tweet(query, 'Top')
+            
+            for tweet in tweets:
+                all_data.append(parse_tweet_data(tweet))
+        except Exception as e:
+            print(f"⚠️ Could not scrape {query}: {e}")
 
-    # 4. Save to CSV
-    df = pd.DataFrame(all_data)
-    df.to_csv('data/ev_comments.csv', index=False)
-    print(f"Saved {len(all_data)} comments to data/ev_comments.csv")
+    # 4. Save Data
+    if all_data:
+        df = pd.DataFrame(all_data)
+        df.to_csv('data/ev_comments.csv', index=False)
+        print(f"🎉 Success! Saved {len(all_data)} rows.")
 
 if __name__ == "__main__":
     asyncio.run(main())
