@@ -1,0 +1,11 @@
+gnore sensitive data
+config.yaml
+.env
+
+# Ignore scraped data
+data/*.csv
+data/*.json
+
+# Python environment
+venv/
+__pycache__/

@@ -1,12 +1,12 @@
 twitter:
-    username: "PodcharaKl10559"
-    password: "Asdf1234"
-    email: "63810055@my.buu.ac.th"
+  username: "PodcharaKl10559"
+  password: "Asdf1234"
+  email: "63810055@my.buu.ac.th"
 
 search:
-    keywords:
-      - "buy EV"
-      - "Tesla vs BYD"
-      - "thinking of electric car"
-      - "range anxiety"
-    limit: 100
+  queries:
+    - "buy EV"
+    - "Tesla vs BYD"
+    - "thinking of electric car"
+    - "range anxiety"
+  count: 100
